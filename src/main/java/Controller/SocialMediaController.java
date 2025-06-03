@@ -16,11 +16,15 @@ public class SocialMediaController {
      */
     public Javalin startAPI() {
         Javalin app = Javalin.create();
-        app.get("example-endpoint", this::exampleHandler);
+        app.get("/messages", this::getAllMessagesHandler);
 
         return app;
     }
 
+
+    private void getAllMessagesHandler(Context ctx) {
+        
+    }
     /**
      * This is an example handler for an example endpoint.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
