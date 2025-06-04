@@ -22,6 +22,26 @@ import java.util.List;
 public class MessageDAO {
     
 
+    // @return Delete message by ID then return message
+    public Message deleteMessageByID(int id) {
+        Connection connection = ConnectionUtil.getConnection();
+        Message message = getMessaageByID(id);
+
+        if (message != null) {
+            try {
+                String sql = "DELETE FROM message WHERE message_id=?;";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setInt(1, id);
+
+                preparedStatement.executeQuery();
+
+            } catch(SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return message;
+    }
+
     // @return message by message_id
     public Message getMessaageByID(int id) {
         Connection connection = ConnectionUtil.getConnection();

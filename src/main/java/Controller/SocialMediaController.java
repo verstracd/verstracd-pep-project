@@ -32,8 +32,19 @@ public class SocialMediaController {
         Javalin app = Javalin.create();
         app.get("/messages", this::getAllMessagesHandler);
         app.get("/messages/{message_id}", this::getMessageByID);
+        app.delete("/messages/{message_id}", this::deleteMessageByID);
 
         return app;
+    }
+
+    private void deleteMessageByID(Context ctx) {
+        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message message = messageService.deleteMessageByID(message_id);
+        if (message != null) {
+            ctx.json(message);
+        } else {
+            ctx.status(200);
+        }
     }
 
 
