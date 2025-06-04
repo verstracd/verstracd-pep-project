@@ -1,5 +1,7 @@
 package Controller;
 
+import Service.AccountService;
+import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -9,6 +11,14 @@ import io.javalin.http.Context;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
+    MessageService messageService;
+    AccountService accountService;
+
+    public SocialMediaController() {
+        messageService = new MessageService();
+        accountService = new AccountService();
+    }
+
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
@@ -23,7 +33,7 @@ public class SocialMediaController {
 
 
     private void getAllMessagesHandler(Context ctx) {
-        
+        ctx.json(messageService.getAllMessages());
     }
     /**
      * This is an example handler for an example endpoint.
