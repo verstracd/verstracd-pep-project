@@ -75,13 +75,6 @@ public class SocialMediaController {
     private void getAllMessagesHandler(Context ctx) {
         ctx.json(messageService.getAllMessages());
     }
-    /**
-     * This is an example handler for an example endpoint.
-     * @param context The Javalin Context object manages information about both the HTTP request and response.
-     */
-    private void exampleHandler(Context context) {
-        context.json("sample text");
-    }
 
 
 }
