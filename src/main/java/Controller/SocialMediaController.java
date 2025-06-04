@@ -31,13 +31,25 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.get("/messages", this::getAllMessagesHandler);
-        app.get("/messages/{message_id}", this::getMessageByID);
-        app.delete("/messages/{message_id}", this::deleteMessageByID);
+        app.get("/messages/{message_id}", this::getMessageByIDHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageByIDHandler);
+        app.post("/messages", this::postMessageHandler);
 
         return app;
     }
 
-    private void deleteMessageByID(Context ctx) {
+    private void postMessageHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        Message addedMessage = messageService.addMessage(message);
+        if (addedMessage == null) {
+            ctx.status(400);
+        }else {
+            ctx.json(mapper.writeValueAsString(addedMessage));
+        }
+    }
+
+    private void deleteMessageByIDHandler(Context ctx) {
         int message_id = Integer.parseInt(ctx.pathParam("message_id"));
         Message message = messageService.deleteMessageByID(message_id);
         if (message != null) {
@@ -48,7 +60,7 @@ public class SocialMediaController {
     }
 
 
-    private void getMessageByID(Context ctx) {
+    private void getMessageByIDHandler(Context ctx) {
         int message_id = Integer.parseInt(ctx.pathParam("message_id"));
         Message message = messageService.getMessageByID(message_id);
         if (message != null) {

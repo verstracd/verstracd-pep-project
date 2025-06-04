@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +23,35 @@ import java.util.List;
 public class MessageDAO {
     
 
+    // @return newly created message
+    public Message insertMessage(Message message) {
+        Connection connection = ConnectionUtil.getConnection();
+
+        try {
+            String sql = "INSERT INTO message (posted_by, message_text, time_posted_epoch) VALUES (?,?,?);";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setInt(1, message.getPosted_by());
+            preparedStatement.setString(2, message.getMessage_text());
+            preparedStatement.setLong(3, message.getTime_posted_epoch());
+
+            preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                int generated_message_id = (int) resultSet.getLong(1);
+                return getMessageByID(generated_message_id);
+            } 
+            
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
     // @return Delete message by ID then return message
     public Message deleteMessageByID(int id) {
         Connection connection = ConnectionUtil.getConnection();
-        Message message = getMessaageByID(id);
+        Message message = getMessageByID(id);
 
         if (message != null) {
             try {
@@ -33,7 +59,7 @@ public class MessageDAO {
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setInt(1, id);
 
-                preparedStatement.executeQuery();
+                preparedStatement.executeUpdate();
 
             } catch(SQLException e) {
                 System.out.println(e.getMessage());
@@ -43,7 +69,7 @@ public class MessageDAO {
     }
 
     // @return message by message_id
-    public Message getMessaageByID(int id) {
+    public Message getMessageByID(int id) {
         Connection connection = ConnectionUtil.getConnection();
 
         try {
