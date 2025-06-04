@@ -1,7 +1,11 @@
 package Controller;
 
+import Model.Message;
+import Model.Account;
 import Service.AccountService;
 import Service.MessageService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -27,8 +31,21 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.get("/messages", this::getAllMessagesHandler);
+        app.get("/messages/{message_id}", this::getMessageByID);
 
         return app;
+    }
+
+
+    private void getMessageByID(Context ctx) {
+        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message message = messageService.getMessageByID(message_id);
+        if (message != null) {
+            ctx.json(message);
+        }else {
+            ctx.status(200);
+        }
+            
     }
 
 
