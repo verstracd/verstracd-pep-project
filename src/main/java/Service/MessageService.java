@@ -21,6 +21,15 @@ public class MessageService {
         this.accountService = accountService;
     }
 
+    public Message updateMessage(int message_id, String message_text) {
+        //Validate text
+        if (message_text == null || message_text.isEmpty() || message_text.length() > 255){
+            return null;
+        }
+        Message updatedMessage = messageDAO.updateMessage(message_id, message_text);
+        return updatedMessage;
+    }
+
     public Message addMessage(Message message) {
         // Validate Message
         String message_text = message.getMessage_text();

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import java.util.Map;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -36,8 +37,23 @@ public class SocialMediaController {
         app.post("/messages", this::postMessageHandler);
         app.post("/register", this::postRegisterAccountHandler);
         app.post("/login", this::postLoginHandler);
+        app.patch("/messages/{message_id}", this::patchUpdateMessageHandler);
 
         return app;
+    }
+
+    private void patchUpdateMessageHandler(Context ctx) throws JsonProcessingException {
+        int message_id = Integer.parseInt(ctx.pathParam("message_id"));
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, String> message_text_json = mapper.readValue(ctx.body(), Map.class);
+        String message_text = message_text_json.get("message_text");
+        Message updatedMessage = messageService.updateMessage(message_id, message_text);
+        if (updatedMessage == null) {
+            ctx.status(400);
+        } else {
+            ctx.json(updatedMessage);
+        }
+
     }
 
     private void postLoginHandler(Context ctx) throws JsonProcessingException {

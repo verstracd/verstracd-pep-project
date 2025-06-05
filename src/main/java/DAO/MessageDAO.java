@@ -22,6 +22,26 @@ import java.util.List;
 
 public class MessageDAO {
     
+    // @return updated message
+    public Message updateMessage(int message_id, String message_text) {
+        Connection connection = ConnectionUtil.getConnection();
+
+        try {
+            String sql = "UPDATE message SET message_text=? WHERE message_id=?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setString(1, message_text);
+            preparedStatement.setInt(2, message_id);
+
+            int rowsEffected = preparedStatement.executeUpdate();
+            if (rowsEffected > 0) {
+                return getMessageByID(message_id);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
 
     // @return newly created message
     public Message insertMessage(Message message) {
