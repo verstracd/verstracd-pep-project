@@ -35,8 +35,20 @@ public class SocialMediaController {
         app.delete("/messages/{message_id}", this::deleteMessageByIDHandler);
         app.post("/messages", this::postMessageHandler);
         app.post("/register", this::postRegisterAccountHandler);
+        app.post("/login", this::postLoginHandler);
 
         return app;
+    }
+
+    private void postLoginHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Account account = mapper.readValue(ctx.body(), Account.class);
+        Account userAccount = accountService.validateAccount(account);
+        if (userAccount == null) {
+            ctx.status(401);
+        } else {
+            ctx.json(mapper.writeValueAsString(userAccount));
+        }
     }
 
     private void postRegisterAccountHandler(Context ctx) throws JsonProcessingException {

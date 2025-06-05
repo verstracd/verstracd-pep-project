@@ -14,10 +14,21 @@ public class AccountService {
         this.accountDAO = accountDAO;
     }
     
-    
+    public Account validateAccount(Account account) {
+        //Validate username and password 
+        String username = account.getUsername();
+        String password = account.getPassword();
+        Account userAccount = getAccountByUsername(username);
+
+        if (userAccount == null || !password.equals(userAccount.getPassword())) {
+            return null;
+        }
+        return userAccount;
+
+    }
 
     public Account addAccount(Account account) {
-        //Validate username and password
+        //Validate username and password are correct length, not empty and not duplicated
         String username = account.getUsername();
         String password = account.getPassword();
         
