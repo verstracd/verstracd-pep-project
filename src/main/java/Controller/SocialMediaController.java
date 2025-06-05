@@ -38,8 +38,13 @@ public class SocialMediaController {
         app.post("/register", this::postRegisterAccountHandler);
         app.post("/login", this::postLoginHandler);
         app.patch("/messages/{message_id}", this::patchUpdateMessageHandler);
+        app.get("/accounts/{account_id}/messages", this::getMessagesByAccountIDHandler);
 
         return app;
+    }
+
+    private void getMessagesByAccountIDHandler(Context ctx) {
+        ctx.json(messageService.getAllMessagesByUserID(Integer.parseInt(ctx.pathParam("account_id"))));
     }
 
     private void patchUpdateMessageHandler(Context ctx) throws JsonProcessingException {
